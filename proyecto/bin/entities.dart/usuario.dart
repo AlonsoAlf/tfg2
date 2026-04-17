@@ -28,6 +28,4 @@ class Usuario{
     }
     return true;
   }
-
-
 }
