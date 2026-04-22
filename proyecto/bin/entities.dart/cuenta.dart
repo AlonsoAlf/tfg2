@@ -44,5 +44,4 @@ class Cuenta {
   String toString() {
     return 'Cuenta(ID: $iduser, Nombre: $cuenta, Contraseña: $passwordCuenta)';
   }
-  
 }
