@@ -26,6 +26,9 @@ void main() async {
       case "gestionar":
         pantalla = await Controladormenu.mostrarCuentas();
         break;
+      case "comprobar":
+        pantalla = await Controladormenu.comprobarPassword();
+        break;
       case "salir":
         stdout.writeln("Saliendo");
         ejecutando = false;

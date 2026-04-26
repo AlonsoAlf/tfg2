@@ -119,7 +119,7 @@ abstract class Controladormenu {
     String? cuenta;
     String? passwordCuenta;
     do {
-      stdout.writeln("Introduca el usuario o correo electronico asociado a la cuenta",);
+      stdout.writeln("Introduca el usuario o correo electronico asociado a la cuenta");
       cuenta = stdin.readLineSync() ?? "";
       stdout.writeln("Introduzca la contraseña de la cuenta");
       passwordCuenta = stdin.readLineSync() ?? "";
@@ -147,18 +147,22 @@ abstract class Controladormenu {
     }
     return "$cuentas";
   }
-  static Future<int> comprobarPassword() async{
+  
+  static Future<String> comprobarPassword() async{
     String? password;
     do {
       stdout.writeln("Introduzca la contraseña que desea comprobar",);
-      password = stdin.readLineSync() ?? "";
-      stdout.writeln("Introduzca la contraseña de la cuenta");
       password = stdin.readLineSync() ?? "";
       if (password.isEmpty) {
         stdout.writeln("Ningún campo puede quedar vacio, intentelo de nuevo");
       }
     } while (password.isEmpty);
-    Encriptacion.comprobarPassword(password);
-    
+    int filtraciones = await Encriptacion.consultarPassword(password);
+    if (filtraciones > 0) {
+      return "La contraseña se ha filtrado $filtraciones veces, cambiala inmediatamente";
+    } else {
+      return "No se han encontrado filtraciones";
+    }
+  
   }
 }
