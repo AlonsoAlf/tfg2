@@ -24,13 +24,12 @@ class Cuenta {
     cuenta = row["cuenta"];
     passwordCuenta = row["passwordcuenta"];
   }
-  static Future<List<Cuenta>> devolverCuentas() async {
-    var conn = await DataBase.establecerConexion(); //llamamos a la bbdd
+  static Future<List<Cuenta>> recuperarCuentas() async {
+    var conn = await DataBase.establecerConexion();
     var registros = await conn.query("""SELECT * FROM cuentas""");
     List<Cuenta> listado = [];
     for (ResultRow registro in registros) {
       Cuenta cuenta = Cuenta.fromDataBase(registro);
-
       listado.add(cuenta);
     }
     return listado;

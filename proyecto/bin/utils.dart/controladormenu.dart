@@ -19,7 +19,7 @@ abstract class Controladormenu {
         stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
         continue;
       }
-    } while (esInvalida(opcion, 3));
+    } while (opcion != "1" && opcion != "2" && opcion != "3");
     if (opcion == "1") {
       return "pantallaInicioSesion";
     } else if (opcion == "2") {
@@ -100,7 +100,7 @@ abstract class Controladormenu {
         stdout.writeln("Selecciones una opcion valida");
         continue;
       }
-    } while (esInvalida(opcion, 3));
+    } while (opcion != "1" && opcion != "2" && opcion != "3");
     switch (opcion) {
       case "1":
         return "añadir";
@@ -138,11 +138,11 @@ abstract class Controladormenu {
   }
 
   static Future<String> mostrarCuentas() async {
-    List<Cuenta> cuentas = await Cuenta.devolverCuentas();
-    for (var cuenta in cuentas) {
-      stdout.writeln(cuenta);
+    List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
+    for(int i = 0; i < cuentas.length; i++){
+      print("${i+1} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
     }
-    return "$cuentas";
+    return "Cuentas devueltas exitosamente";
   }
   
   static Future<String> comprobarPassword() async{
@@ -161,9 +161,5 @@ abstract class Controladormenu {
     } else {
       return "No se han encontrado filtraciones";
     }
-  
   }
-static bool esInvalida(String opcion, int numero){
-  return (int.tryParse(opcion)?? 0) > 0 || (int.tryParse(opcion)?? 0) < 1;
-}
 }
