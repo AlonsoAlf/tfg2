@@ -6,6 +6,7 @@ abstract class Controladormenu {
   static String inicio = "pantallaPrincipal";
   static Future<String> pantallaPrincipal() async {
     String? opcion;
+    int? numero;
     do {
       stdout.writeln("Bienvenido, seleccione una acción:");
       stdout.writeln("1. Iniciar sesion");
@@ -13,14 +14,12 @@ abstract class Controladormenu {
       stdout.writeln("3. Salir");
       opcion = stdin.readLineSync() ?? "";
       int.tryParse(opcion) ?? 0;
-      int? numero = int.tryParse(opcion);
+      numero = int.tryParse(opcion);
       if (numero == null) {
         stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
         continue;
       }
-    } while (opcion != "1" &&
-        opcion != "2" &&
-        opcion != "3"); //recuerda que == es "iguales" y != es "distintos"
+    } while (esInvalida(opcion, 3));
     if (opcion == "1") {
       return "pantallaInicioSesion";
     } else if (opcion == "2") {
@@ -101,7 +100,7 @@ abstract class Controladormenu {
         stdout.writeln("Selecciones una opcion valida");
         continue;
       }
-    } while (opcion != "1" && opcion != "2" && opcion != "3");
+    } while (esInvalida(opcion, 3));
     switch (opcion) {
       case "1":
         return "añadir";
@@ -114,7 +113,7 @@ abstract class Controladormenu {
     }
   }
 
-  static Future<String> introducirData() async {
+  static Future<String> introducirCuenta() async {
     Map<String, String> data;
     String? cuenta;
     String? passwordCuenta;
@@ -128,14 +127,12 @@ abstract class Controladormenu {
       }
     } while (cuenta.isEmpty || passwordCuenta.isEmpty);
     data = {"cuenta": cuenta, "passwordCuenta": passwordCuenta};
-    bool existe = await Cuenta.existePassword(data);
+    bool existe = await Cuenta.existeCuenta(data);
     if (existe) {
       stdout.writeln("Contraseña guardada correctamente");
       return "menuAcciones";
     } else {
-      stdout.writeln(
-        "La contraseña o el usuario ya existen. Intentelo de nuevo",
-      );
+      stdout.writeln("La contraseña o el usuario ya existen. Intentelo de nuevo");
       return "menuAcciones";
     }
   }
@@ -150,6 +147,7 @@ abstract class Controladormenu {
   
   static Future<String> comprobarPassword() async{
     String? password;
+    int? filtraciones;
     do {
       stdout.writeln("Introduzca la contraseña que desea comprobar",);
       password = stdin.readLineSync() ?? "";
@@ -157,7 +155,7 @@ abstract class Controladormenu {
         stdout.writeln("Ningún campo puede quedar vacio, intentelo de nuevo");
       }
     } while (password.isEmpty);
-    int filtraciones = await Encriptacion.consultarPassword(password);
+    filtraciones = await Encriptacion.consultarPassword(password);
     if (filtraciones > 0) {
       return "La contraseña se ha filtrado $filtraciones veces, cambiala inmediatamente";
     } else {
@@ -165,4 +163,7 @@ abstract class Controladormenu {
     }
   
   }
+static bool esInvalida(String opcion, int numero){
+  return (int.tryParse(opcion)?? 0) > 0 || (int.tryParse(opcion)?? 0) < 1;
+}
 }

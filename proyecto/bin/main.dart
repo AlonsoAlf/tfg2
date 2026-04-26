@@ -21,7 +21,7 @@ void main() async {
         pantalla = await Controladormenu.menuAcciones(datos);
         break;
       case "añadir":
-        pantalla = await Controladormenu.introducirData();
+        pantalla = await Controladormenu.introducirCuenta();
         break;
       case "gestionar":
         pantalla = await Controladormenu.mostrarCuentas();

@@ -6,20 +6,15 @@ class Cuenta {
   String? cuenta;
   String? passwordCuenta;
   Cuenta(this.cuenta, this.passwordCuenta, this.iduser);
-  static Future<bool> existePassword(Map<String, String> data) async {
+  static Future<bool> existeCuenta(Map<String, String> data) async {
     MySqlConnection conn = await DataBase.establecerConexion();
-    var respuesta = await conn.query("SELECT * FROM cuentas WHERE cuenta = ?", [
-      data["cuenta"],
-    ]);
+    var respuesta = await conn.query("SELECT * FROM cuentas WHERE cuenta = ?", [data["cuenta"]]);
     bool existe = respuesta.isNotEmpty;
     if (existe) {
       await conn.close();
       return false;
     }
-    await conn.query(
-      "INSERT INTO cuentas (cuenta,passwordCuenta) VALUES(?,?)",
-      [data["cuenta"], data["passwordCuenta"]],
-    );
+    await conn.query("INSERT INTO cuentas (cuenta,passwordCuenta) VALUES(?,?)",[data["cuenta"], data["passwordCuenta"]]);
     await conn.close();
     return true;
   }
