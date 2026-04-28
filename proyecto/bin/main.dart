@@ -8,31 +8,31 @@ void main() async {
   bool ejecutando = true;
   while (ejecutando) {
     switch (pantalla) {
-      case "pantallaPrincipal":
-        pantalla = await Controladormenu.pantallaPrincipal();
-        break;
-      case "pantallaInicioSesion":
-        pantalla = await Controladormenu.pantallaInicioSesion(datos);
-        break;
-      case "pantallaRegistro":
-        pantalla = await Controladormenu.pantallaRegistro();
-        break;
-      case "menuAcciones":
-        pantalla = await Controladormenu.menuAcciones(datos);
-        break;
-      case "añadir":
-        pantalla = await Controladormenu.introducirCuenta();
-        break;
-      case "gestionar":
-        pantalla = await Controladormenu.mostrarCuentas();
-        break;
-      case "comprobar":
-        pantalla = await Controladormenu.comprobarPassword();
-        break;
-      case "salir":
-        stdout.writeln("Saliendo");
-        ejecutando = false;
-        break;
+    case "pantallaPrincipal":
+      pantalla = await Controladormenu.pantallaPrincipal();
+      break;
+    case "pantallaInicioSesion":
+      pantalla = await Controladormenu.pantallaInicioSesion(datos);
+      break;
+    case "pantallaRegistro":
+      pantalla = await Controladormenu.pantallaRegistro();
+      break;
+    case "menuAcciones":
+      pantalla = await Controladormenu.menuAcciones(datos);
+      break;
+    case "añadir":
+      pantalla = await Controladormenu.introducirCuenta();
+      break;
+    case "gestionar":
+      pantalla = await Controladormenu.opcionesGestionCuenta();
+      break;
+    case "comprobar":
+      pantalla = await Controladormenu.comprobarPassword();
+      break;
+    case "salir":
+      stdout.writeln("Saliendo");
+      ejecutando = false;
+      break;
     }
   }
 }

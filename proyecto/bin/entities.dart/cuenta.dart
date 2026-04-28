@@ -26,16 +26,17 @@ class Cuenta {
   }
   static Future<List<Cuenta>> recuperarCuentas() async {
     var conn = await DataBase.establecerConexion();
-    var registros = await conn.query("""SELECT * FROM cuentas""");
+    var respuesta = await conn.query("""SELECT * FROM cuentas""");
     List<Cuenta> listado = [];
-    for (ResultRow registro in registros) {
+    for (ResultRow registro in respuesta) {
       Cuenta cuenta = Cuenta.fromDataBase(registro);
       listado.add(cuenta);
     }
     return listado;
   }
-
-  String toString() {
-    return 'Cuenta(ID: $iduser, Nombre: $cuenta, Contraseña: $passwordCuenta)';
+  static Future<int?> borrarCuenta(int iduser) async{
+    var conn = await DataBase.establecerConexion();
+    var borrado = await conn.query("DELETE FROM cuentas WHERE iduser = ?",[iduser]);
+    return borrado.affectedRows;
   }
 }

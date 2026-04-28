@@ -136,15 +136,34 @@ abstract class Controladormenu {
       return "menuAcciones";
     }
   }
-
-  static Future<String> mostrarCuentas() async {
+  static Future<String> opcionesGestionCuenta() async{
     List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
     for(int i = 0; i < cuentas.length; i++){
       print("${i+1} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
     }
-    return "Cuentas devueltas exitosamente";
+    String? opcion;
+    int? numero;
+    do{
+      stdout.writeln("Seleccione como desea gestionar sus cuentas");
+      stdout.writeln("1. Borrar cuenta");
+      stdout.writeln("2. Modificar cuenta");
+      stdout.writeln("3. Salir");
+      opcion = stdin.readLineSync() ?? "";
+      int.tryParse(opcion) ?? 0;
+      numero = int.tryParse(opcion);
+      if (numero == null) {
+        stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
+        continue;
+      }
+    }while(opcion != "1" && opcion != "2" && opcion != "3");
+    if (opcion == "1") {
+      return "borrarCuenta";
+    } else if (opcion == "2") {
+      return "modificarCuenta";
+    } else {
+      return "salir";
+    }
   }
-  
   static Future<String> comprobarPassword() async{
     String? password;
     int? filtraciones;
