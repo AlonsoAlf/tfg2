@@ -139,7 +139,7 @@ abstract class Controladormenu {
   static Future<String> opcionesGestionCuenta() async{
     List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
     for(int i = 0; i < cuentas.length; i++){
-      print("${i+1} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
+      print("${cuentas[i].iduser} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
     }
     String? opcion;
     int? numero;
@@ -162,6 +162,28 @@ abstract class Controladormenu {
       return "modificarCuenta";
     } else {
       return "salir";
+    }
+  }
+  static Future<String> borrarCuenta() async{  
+    try{
+      stdout.writeln("Introduzca el ID de la cuenta que desa borrar");
+      String respuesta = stdin.readLineSync() ?? "";
+      int? iduser = int.tryParse(respuesta);
+      var conn = await DataBase.establecerConexion();
+      var borrado = await conn.query("DELETE FROM cuentas WHERE iduser = ?",[iduser]);
+      int? affectedRows = borrado.affectedRows;
+      if(affectedRows != null && affectedRows > 0){
+        print("Cuenta eliminada correctamente");
+        return "menuAcciones";
+      }else if(affectedRows == 0){
+        print("No se encontró ninguna cuenta con el ID $iduser");
+        return "opcionesGestionCuenta";
+      }else{
+        print("Error, la base de datos no devolvió una respuesta valida");
+        return "opcionesGestionCuenta";
+      }
+    }catch(error){
+      return "menuAcciones";
     }
   }
   static Future<String> comprobarPassword() async{
