@@ -94,7 +94,7 @@ abstract class Controladormenu {
       stdout.writeln("1. Añadir usuario y contraseña.");
       stdout.writeln("2. Gestionar contraseñas");
       stdout.writeln("3. Comprobar seguridad contraseña");
-      stdout.writeln("4. Salir");
+      stdout.writeln("4. Volver");
       opcion = stdin.readLineSync() ?? "";
       if (opcion.isEmpty) {
         stdout.writeln("Seleccione una opcion valida");
@@ -109,7 +109,7 @@ abstract class Controladormenu {
       case "3":
         return "comprobar";
       default:
-        return "salir";
+        return "pantallaPrincipal";
     }
   }
 
