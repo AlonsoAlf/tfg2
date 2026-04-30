@@ -3,25 +3,23 @@ import 'utils.dart/utils.dart';
 
 void main() async {
   DataBase.instalacion();
-  Map<String, String> datos = {};
   String pantalla = Controladormenu.inicio;
-  bool ejecutando = true;
-  while (ejecutando) {
+  while (true) {
     switch (pantalla) {
     case "pantallaPrincipal":
-      pantalla = await Controladormenu.pantallaPrincipal();
+      pantalla =  Controladormenu.pantallaPrincipal();
       break;
     case "pantallaInicioSesion":
-      pantalla = await Controladormenu.pantallaInicioSesion(datos);
+      pantalla = await Controladormenu.pantallaInicioSesion();
       break;
     case "pantallaRegistro":
       pantalla = await Controladormenu.pantallaRegistro();
       break;
     case "menuAcciones":
-      pantalla = await Controladormenu.menuAcciones(datos);
+      pantalla = Controladormenu.menuAcciones();
       break;
-    case "añadir":
-      pantalla = await Controladormenu.introducirCuenta();
+    case "addCuenta":
+      pantalla = await Controladormenu.addCuenta();
       break;
     case "gestionar":
       pantalla = await Controladormenu.opcionesGestionCuenta();
@@ -33,8 +31,10 @@ void main() async {
       pantalla = await Controladormenu.comprobarPassword();
       break;
     case "salir":
+      break;
+    }
+    if(pantalla == "salir"){
       stdout.writeln("Saliendo");
-      ejecutando = false;
       break;
     }
   }

@@ -4,7 +4,7 @@ import 'utils.dart';
 abstract class Controladormenu {
   static Usuario? usuario;
   static String inicio = "pantallaPrincipal";
-  static Future<String> pantallaPrincipal() async {
+  static String pantallaPrincipal() {
     String? opcion;
     int? numero;
     do {
@@ -13,7 +13,6 @@ abstract class Controladormenu {
       stdout.writeln("2. Registrarse");
       stdout.writeln("3. Salir");
       opcion = stdin.readLineSync() ?? "";
-      int.tryParse(opcion) ?? 0;
       numero = int.tryParse(opcion);
       if (numero == null) {
         stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
@@ -61,7 +60,7 @@ abstract class Controladormenu {
     }
   }
 
-  static Future<String> pantallaInicioSesion(Map<String, String> datos) async {
+  static Future<String> pantallaInicioSesion() async {
     String? apodo;
     String? password;
     do {
@@ -88,32 +87,33 @@ abstract class Controladormenu {
     }
   }
 
-  static Future<String> menuAcciones(Map<String, String> datos) async {
+  static String menuAcciones() {
     String? opcion;
     do {
       stdout.writeln("Seleccione que acción desea hacer:");
       stdout.writeln("1. Añadir usuario y contraseña.");
       stdout.writeln("2. Gestionar contraseñas");
       stdout.writeln("3. Comprobar seguridad contraseña");
+      stdout.writeln("4. Salir");
       opcion = stdin.readLineSync() ?? "";
       if (opcion.isEmpty) {
-        stdout.writeln("Selecciones una opcion valida");
+        stdout.writeln("Seleccione una opcion valida");
         continue;
       }
-    } while (opcion != "1" && opcion != "2" && opcion != "3");
+    } while (opcion != "1" && opcion != "2" && opcion != "3" && opcion != "4");
     switch (opcion) {
       case "1":
-        return "añadir";
+        return "addCuenta";
       case "2":
         return "gestionar";
       case "3":
         return "comprobar";
       default:
-        return "menuAcciones";
+        return "salir";
     }
   }
 
-  static Future<String> introducirCuenta() async {
+  static Future<String> addCuenta() async {
     Map<String, String> data;
     String? cuenta;
     String? passwordCuenta;
@@ -137,19 +137,18 @@ abstract class Controladormenu {
     }
   }
   static Future<String> opcionesGestionCuenta() async{
-    List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
-    for(int i = 0; i < cuentas.length; i++){
-      print("${cuentas[i].iduser} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
-    }
     String? opcion;
     int? numero;
+    List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
+    for(int i = 0; i < cuentas.length; i++){
+      stdout.writeln("${cuentas[i].iduser} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
+    }
     do{
       stdout.writeln("Seleccione como desea gestionar sus cuentas");
       stdout.writeln("1. Borrar cuenta");
       stdout.writeln("2. Modificar cuenta");
-      stdout.writeln("3. Salir");
+      stdout.writeln("3. Volver");
       opcion = stdin.readLineSync() ?? "";
-      int.tryParse(opcion) ?? 0;
       numero = int.tryParse(opcion);
       if (numero == null) {
         stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
@@ -161,7 +160,7 @@ abstract class Controladormenu {
     } else if (opcion == "2") {
       return "modificarCuenta";
     } else {
-      return "salir";
+      return "menuAcciones";
     }
   }
   static Future<String> borrarCuenta() async{  
@@ -198,9 +197,11 @@ abstract class Controladormenu {
     } while (password.isEmpty);
     filtraciones = await Encriptacion.consultarPassword(password);
     if (filtraciones > 0) {
-      return "La contraseña se ha filtrado $filtraciones veces, cambiala inmediatamente";
+      print("La contraseña $password se ha filtrado $filtraciones veces, cambiala inmediatamente");
+      return "opcionesGestionCuenta";
     } else {
-      return "No se han encontrado filtraciones";
+      print("No se han encontrado filtraciones de $password");
+      return "opcionesGestionCuenta";
     }
   }
 }
