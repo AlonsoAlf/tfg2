@@ -33,7 +33,7 @@ abstract class DataBase {
   }
 
   static Future<void> crearTablaUsers(MySqlConnection conn) async {
-    await conn.query("""CREATE TABLE IF NOT EXISTS USERS(
+    await conn.query("""CREATE TABLE IF NOT EXISTS users(
         iduser INT PRIMARY KEY AUTO_INCREMENT,
         nombre VARCHAR(100) NOT NULL,
         apodo VARCHAR(100) NOT NULL,
@@ -44,7 +44,7 @@ abstract class DataBase {
 
   static Future<void> crearTablaCuentas(MySqlConnection conn) async {
     await conn.query("""CREATE TABLE IF NOT EXISTS cuentas(
-        iduser INT PRIMARY KEY AUTO_INCREMENT,
+        idcuenta INT PRIMARY KEY AUTO_INCREMENT,
         cuenta VARCHAR(100) NOT NULL,
         passwordcuenta VARCHAR(100) NOT NULL
     );

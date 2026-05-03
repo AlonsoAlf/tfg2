@@ -2,10 +2,10 @@ import 'package:mysql1/mysql1.dart';
 import '../utils.dart/utils.dart';
 
 class Cuenta {
-  int? iduser;
+  int? idcuenta;
   String? cuenta;
   String? passwordCuenta;
-  Cuenta(this.cuenta, this.passwordCuenta, this.iduser);
+  Cuenta(this.cuenta, this.passwordCuenta, this.idcuenta);
   static Future<bool> existeCuenta(Map<String, String> data) async {
     MySqlConnection conn = await DataBase.establecerConexion();
     var respuesta = await conn.query("SELECT * FROM cuentas WHERE cuenta = ?", [data["cuenta"]]);
@@ -20,7 +20,7 @@ class Cuenta {
   }
 
   Cuenta.fromDataBase(ResultRow row) {
-    iduser = row["iduser"];
+    idcuenta = row["idcuenta"];
     cuenta = row["cuenta"];
     passwordCuenta = row["passwordcuenta"];
   }
@@ -34,9 +34,9 @@ class Cuenta {
     }
     return listado;
   }
-  static Future<int?> borrarCuenta(int iduser) async{
+  static Future<int?> borrarCuenta(int idcuenta) async{
     var conn = await DataBase.establecerConexion();
-    var borrado = await conn.query("DELETE FROM cuentas WHERE iduser = ?",[iduser]);
+    var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?",[idcuenta]);
     return borrado.affectedRows;
   }
 }

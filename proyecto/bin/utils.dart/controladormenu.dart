@@ -141,7 +141,7 @@ abstract class Controladormenu {
     int? numero;
     List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
     for(int i = 0; i < cuentas.length; i++){
-      stdout.writeln("${cuentas[i].iduser} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
+      stdout.writeln("${cuentas[i].idcuenta} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
     }
     do{
       stdout.writeln("Seleccione como desea gestionar sus cuentas");
@@ -167,15 +167,15 @@ abstract class Controladormenu {
     try{
       stdout.writeln("Introduzca el ID de la cuenta que desa borrar");
       String respuesta = stdin.readLineSync() ?? "";
-      int? iduser = int.tryParse(respuesta);
+      int? idcuenta = int.tryParse(respuesta);
       var conn = await DataBase.establecerConexion();
-      var borrado = await conn.query("DELETE FROM cuentas WHERE iduser = ?",[iduser]);
+      var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?",[idcuenta]);
       int? affectedRows = borrado.affectedRows;
       if(affectedRows != null && affectedRows > 0){
         print("Cuenta eliminada correctamente");
         return "menuAcciones";
       }else if(affectedRows == 0){
-        print("No se encontró ninguna cuenta con el ID $iduser");
+        print("No se encontró ninguna cuenta con el ID $idcuenta");
         return "opcionesGestionCuenta";
       }else{
         print("Error, la base de datos no devolvió una respuesta valida");
