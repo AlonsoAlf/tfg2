@@ -39,4 +39,9 @@ class Cuenta {
     var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?",[idcuenta]);
     return borrado.affectedRows;
   }
+  static Future<int?> modificarCuenta(int idcuenta, String cuenta, String passwordCuenta) async{
+    var conn = await DataBase.establecerConexion();
+    var modificado = await conn.query("UPDATE cuentas SET cuenta = ?, passwordCuenta = ? WHERE idcuenta = ?", [cuenta, passwordCuenta, idcuenta]);
+    return modificado.affectedRows;
+  }
 }

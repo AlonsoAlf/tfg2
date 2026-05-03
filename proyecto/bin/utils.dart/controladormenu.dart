@@ -1,6 +1,7 @@
 import 'dart:io';
 import '../entities.dart/entities.dart';
 import 'utils.dart';
+
 abstract class Controladormenu {
   static Usuario? usuario;
   static String inicio = "pantallaPrincipal";
@@ -136,14 +137,15 @@ abstract class Controladormenu {
       return "menuAcciones";
     }
   }
-  static Future<String> opcionesGestionCuenta() async{
+
+  static Future<String> opcionesGestionCuenta() async {//hay que refactorizar
     String? opcion;
     int? numero;
     List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
-    for(int i = 0; i < cuentas.length; i++){
-      stdout.writeln("${cuentas[i].idcuenta} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]"); 
+    for (int i = 0; i < cuentas.length; i++) {
+      stdout.writeln("${cuentas[i].idcuenta} [${cuentas[i].cuenta},${cuentas[i].passwordCuenta}]");
     }
-    do{
+    do {
       stdout.writeln("Seleccione como desea gestionar sus cuentas");
       stdout.writeln("1. Borrar cuenta");
       stdout.writeln("2. Modificar cuenta");
@@ -154,7 +156,7 @@ abstract class Controladormenu {
         stdout.writeln("Valor invalido. Por favor, intentelo de nuevo");
         continue;
       }
-    }while(opcion != "1" && opcion != "2" && opcion != "3");
+    } while (opcion != "1" && opcion != "2" && opcion != "3");
     if (opcion == "1") {
       return "borrarCuenta";
     } else if (opcion == "2") {
@@ -163,33 +165,74 @@ abstract class Controladormenu {
       return "menuAcciones";
     }
   }
-  static Future<String> borrarCuenta() async{  
-    try{
+
+  static Future<String> borrarCuenta() async {//hay que refactorizar
+    try {
       stdout.writeln("Introduzca el ID de la cuenta que desa borrar");
       String respuesta = stdin.readLineSync() ?? "";
       int? idcuenta = int.tryParse(respuesta);
       var conn = await DataBase.establecerConexion();
-      var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?",[idcuenta]);
+      var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?", [idcuenta]);
       int? affectedRows = borrado.affectedRows;
-      if(affectedRows != null && affectedRows > 0){
-        print("Cuenta eliminada correctamente");
+      if (affectedRows != null && affectedRows > 0) {
+        stdout.writeln("Cuenta eliminada correctamente");
         return "menuAcciones";
-      }else if(affectedRows == 0){
-        print("No se encontró ninguna cuenta con el ID $idcuenta");
+      } else if (affectedRows == 0) {
+        stdout.writeln("No se encontró ninguna cuenta con el ID $idcuenta");
         return "opcionesGestionCuenta";
-      }else{
-        print("Error, la base de datos no devolvió una respuesta valida");
+      } else {
+        stdout.writeln(
+          "Error, la base de datos no devolvió una respuesta valida",
+        );
         return "opcionesGestionCuenta";
       }
-    }catch(error){
+    } catch (error) {
       return "menuAcciones";
     }
   }
-  static Future<String> comprobarPassword() async{
+
+  static Future<String> cuentaModificada() async {
+    String? respuesta;
+    int? idcuenta;
+    String? cuenta;
+    String? passwordCuenta;
+    do {
+      stdout.writeln("Introduzca el ID de la cuenta que desa modificar");
+      respuesta = stdin.readLineSync() ?? "";
+      idcuenta = int.tryParse(respuesta);
+      stdout.writeln("Introduzca el nuevo nombre de usuario");
+      cuenta = stdin.readLineSync() ?? "";
+      stdout.writeln("Introduzca la nueva contraseña");
+      passwordCuenta = stdin.readLineSync() ?? "";
+      if (respuesta.isEmpty || cuenta.isEmpty || passwordCuenta.isEmpty) {
+        stdout.writeln("Ningún campo puede quedar vacio");
+      }
+      if (respuesta.isNotEmpty) {
+        idcuenta = int.tryParse(respuesta);
+      }
+    } while (respuesta.isEmpty || cuenta.isEmpty || passwordCuenta.isEmpty);
+    var resultado = await Cuenta.modificarCuenta(
+      idcuenta!,
+      cuenta,
+      passwordCuenta,
+    );
+    if (resultado != null && resultado > 0) {
+      stdout.writeln("Cuenta modificada correctamente");
+      return "menuAcciones";
+    } else if (resultado == 0) {
+      stdout.writeln("No se encontró ninguna cuenta con el ID $idcuenta");
+      return "opcionesGestionCuenta";
+    } else {
+      stdout.writeln("Error");
+    }
+    return "opcionesGestionCuenta";
+  }
+
+  static Future<String> comprobarPassword() async {
     String? password;
     int? filtraciones;
     do {
-      stdout.writeln("Introduzca la contraseña que desea comprobar",);
+      stdout.writeln("Introduzca la contraseña que desea comprobar");
       password = stdin.readLineSync() ?? "";
       if (password.isEmpty) {
         stdout.writeln("Ningún campo puede quedar vacio, intentelo de nuevo");
@@ -197,10 +240,10 @@ abstract class Controladormenu {
     } while (password.isEmpty);
     filtraciones = await Encriptacion.consultarPassword(password);
     if (filtraciones > 0) {
-      print("La contraseña $password se ha filtrado $filtraciones veces, cambiala inmediatamente");
+      stdout.writeln("La contraseña $password se ha filtrado $filtraciones veces, cambiala inmediatamente");
       return "opcionesGestionCuenta";
     } else {
-      print("No se han encontrado filtraciones de $password");
+      stdout.writeln("No se han encontrado filtraciones de $password");
       return "opcionesGestionCuenta";
     }
   }
