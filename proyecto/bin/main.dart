@@ -37,11 +37,10 @@ void main() async {
       pantalla = await Controladormenu.comprobarPassword();
       break;
     case "salir":
-      break;
-    }
-    if(pantalla == "salir"){
-      stdout.writeln("Saliendo");
-      break;
+      stdout.writeln("""
+        Saliendo
+        """);
+      exit(0);
     }
   }
 }
