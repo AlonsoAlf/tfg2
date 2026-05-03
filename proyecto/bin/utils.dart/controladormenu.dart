@@ -165,86 +165,82 @@ abstract class Controladormenu {
       return "menuAcciones";
     }
   }
-
-  static Future<String> borrarCuenta() async {//hay que refactorizar
-    try {
+  static Future<String> cuentaBorrada()async{
+    String? respuesta;
+    int? idcuenta;
+    try{
       stdout.writeln("Introduzca el ID de la cuenta que desa borrar");
-      String respuesta = stdin.readLineSync() ?? "";
-      int? idcuenta = int.tryParse(respuesta);
-      var conn = await DataBase.establecerConexion();
-      var borrado = await conn.query("DELETE FROM cuentas WHERE idcuenta = ?", [idcuenta]);
-      int? affectedRows = borrado.affectedRows;
-      if (affectedRows != null && affectedRows > 0) {
-        stdout.writeln("Cuenta eliminada correctamente");
-        return "menuAcciones";
-      } else if (affectedRows == 0) {
+      respuesta = stdin.readLineSync()?? "";
+      if(respuesta.isEmpty){
+        stdout.writeln("Debe introducir un ID valido, intentelo de nuevo");
+      }else if(respuesta.isNotEmpty){
+        idcuenta = int.tryParse(respuesta);
+      }
+      var resultado = await Cuenta.borrarCuenta(idcuenta!);
+      if(resultado != null && resultado > 0){
+        stdout.writeln("Cuenta borrada correctamente");
+        return "menuAcciones";  
+      }else if (resultado == 0){
         stdout.writeln("No se encontró ninguna cuenta con el ID $idcuenta");
         return "opcionesGestionCuenta";
-      } else {
-        stdout.writeln(
-          "Error, la base de datos no devolvió una respuesta valida",
-        );
-        return "opcionesGestionCuenta";
       }
-    } catch (error) {
-      return "menuAcciones";
+      return "opcionesGestionCuenta";
+    }catch(error){
+      stdout.writeln("Introduzca un ID formado por numeros enteros");
     }
+    return "opcionesGestionCuenta";
   }
 
   static Future<String> cuentaModificada() async {
-    String? respuesta;
-    int? idcuenta;
-    String? cuenta;
-    String? passwordCuenta;
-    do {
-      stdout.writeln("Introduzca el ID de la cuenta que desa modificar");
-      respuesta = stdin.readLineSync() ?? "";
+  String? respuesta;
+  int? idcuenta;
+  String? cuenta;
+  String? passwordCuenta;
+  try{
+    stdout.writeln("Introduzca el ID de la cuenta que desa modificar");
+    respuesta = stdin.readLineSync() ?? "";
+    stdout.writeln("Introduzca el nuevo nombre de usuario");
+    cuenta = stdin.readLineSync() ?? "";
+    stdout.writeln("Introduzca la nueva contraseña");
+    passwordCuenta = stdin.readLineSync() ?? "";
+    if (respuesta.isEmpty || cuenta.isEmpty || passwordCuenta.isEmpty) {
+      stdout.writeln("Ningún campo puede quedar vacio");
+    }
+    if (respuesta.isNotEmpty) {
       idcuenta = int.tryParse(respuesta);
-      stdout.writeln("Introduzca el nuevo nombre de usuario");
-      cuenta = stdin.readLineSync() ?? "";
-      stdout.writeln("Introduzca la nueva contraseña");
-      passwordCuenta = stdin.readLineSync() ?? "";
-      if (respuesta.isEmpty || cuenta.isEmpty || passwordCuenta.isEmpty) {
-        stdout.writeln("Ningún campo puede quedar vacio");
-      }
-      if (respuesta.isNotEmpty) {
-        idcuenta = int.tryParse(respuesta);
-      }
-    } while (respuesta.isEmpty || cuenta.isEmpty || passwordCuenta.isEmpty);
-    var resultado = await Cuenta.modificarCuenta(
-      idcuenta!,
-      cuenta,
-      passwordCuenta,
-    );
+    }
+    var resultado = await Cuenta.modificarCuenta(idcuenta!,cuenta,passwordCuenta);
     if (resultado != null && resultado > 0) {
       stdout.writeln("Cuenta modificada correctamente");
       return "menuAcciones";
     } else if (resultado == 0) {
       stdout.writeln("No se encontró ninguna cuenta con el ID $idcuenta");
       return "opcionesGestionCuenta";
-    } else {
-      stdout.writeln("Error");
     }
     return "opcionesGestionCuenta";
+  }catch(error){
+    stdout.writeln("Introduzca un ID formado por numeros enteros");
+  }
+  return "opcionesGestionCuenta";
   }
 
   static Future<String> comprobarPassword() async {
-    String? password;
-    int? filtraciones;
-    do {
-      stdout.writeln("Introduzca la contraseña que desea comprobar");
-      password = stdin.readLineSync() ?? "";
-      if (password.isEmpty) {
-        stdout.writeln("Ningún campo puede quedar vacio, intentelo de nuevo");
-      }
-    } while (password.isEmpty);
-    filtraciones = await Encriptacion.consultarPassword(password);
-    if (filtraciones > 0) {
-      stdout.writeln("La contraseña $password se ha filtrado $filtraciones veces, cambiala inmediatamente");
-      return "opcionesGestionCuenta";
-    } else {
-      stdout.writeln("No se han encontrado filtraciones de $password");
-      return "opcionesGestionCuenta";
+  String? password;
+  int? filtraciones;
+  do {
+    stdout.writeln("Introduzca la contraseña que desea comprobar");
+    password = stdin.readLineSync() ?? "";
+    if (password.isEmpty) {
+      stdout.writeln("Ningún campo puede quedar vacio, intentelo de nuevo");
     }
+  } while (password.isEmpty);
+    filtraciones = await Encriptacion.consultarPassword(password);
+  if (filtraciones > 0) {
+    stdout.writeln("La contraseña $password se ha filtrado $filtraciones veces, cambiala inmediatamente");
+    return "menuAcciones";
+  } else {
+    stdout.writeln("No se han encontrado filtraciones de $password");
+    return "menuAcciones";
+  }
   }
 }

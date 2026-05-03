@@ -24,8 +24,11 @@ void main() async {
     case "gestionar":
       pantalla = await Controladormenu.opcionesGestionCuenta();
       break;
+    case "opcionesGestionCuenta":
+      pantalla = await Controladormenu.opcionesGestionCuenta();
+      break;
     case "borrarCuenta":
-      pantalla = await Controladormenu.borrarCuenta();
+      pantalla = await Controladormenu.cuentaBorrada();
       break;
     case "modificarCuenta":
       pantalla = await Controladormenu.cuentaModificada();
