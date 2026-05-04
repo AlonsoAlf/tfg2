@@ -85,6 +85,7 @@ abstract class Controladormenu {
   static Future<String> pantallaInicioSesion() async {
     String? apodo;
     String? password;
+    Usuario? logueado;
     do {
       stdout.writeln("""
         Introduzca su apodo
@@ -107,8 +108,9 @@ abstract class Controladormenu {
         continue;
       }
     } while (apodo.isEmpty || password.isEmpty);
-    bool logeado = await Usuario.inicioSesion(apodo, password);
-    if (logeado) {
+     logueado = await Usuario.inicioSesion(apodo, password);
+    if (logueado != null) {
+      SesionGlobal.usuarioActual = logueado;
       stdout.writeln("""
 ==============================================
         Bienvenido $apodo""");
@@ -153,8 +155,8 @@ abstract class Controladormenu {
     }
   }
 
-  static Future<String> addCuenta() async {
-    Map<String, String> data;
+  static Future<String> addCuenta(Usuario usuario) async {
+    Map<String, dynamic> data;
     String? cuenta;
     String? passwordCuenta;
     do {
@@ -172,7 +174,7 @@ abstract class Controladormenu {
         """);
       }
     } while (cuenta.isEmpty || passwordCuenta.isEmpty);
-    data = {"cuenta": cuenta, "passwordCuenta": passwordCuenta};
+    data = {"cuenta": cuenta, "passwordCuenta": passwordCuenta, "iduser":usuario.iduser};
     bool existe = await Cuenta.existeCuenta(data);
     if (existe) {
       stdout.writeln("""

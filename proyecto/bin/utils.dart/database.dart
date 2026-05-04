@@ -11,7 +11,7 @@ abstract class DataBase {
       host: _host,
       port: _port,
       user: _user,
-      db: _dbName,
+      //db: _dbName,
     );
     MySqlConnection conn = await MySqlConnection.connect(settings);
     await conn.query("CREATE DATABASE IF NOT EXISTS basedatosproyecto_db");
@@ -43,10 +43,16 @@ abstract class DataBase {
   }
 
   static Future<void> crearTablaCuentas(MySqlConnection conn) async {
-    await conn.query("""CREATE TABLE IF NOT EXISTS cuentas(
-        idcuenta INT PRIMARY KEY AUTO_INCREMENT,
-        cuenta VARCHAR(100) NOT NULL,
-        passwordcuenta VARCHAR(100) NOT NULL
+    await conn.query("""CREATE TABLE IF NOT EXISTS cuentas (
+    idcuenta INT PRIMARY KEY AUTO_INCREMENT,
+    cuenta VARCHAR(100) NOT NULL,
+    passwordcuenta VARCHAR(100) NOT NULL,
+    iduser INT NOT NULL,
+    CONSTRAINT fk_usuario_cuenta
+        FOREIGN KEY (iduser) 
+        REFERENCES usuarios(iduser)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
     );
     """);
   }

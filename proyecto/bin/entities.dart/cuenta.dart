@@ -6,7 +6,7 @@ class Cuenta {
   String? cuenta;
   String? passwordCuenta;
   Cuenta(this.cuenta, this.passwordCuenta, this.idcuenta);
-  static Future<bool> existeCuenta(Map<String, String> data) async {
+  static Future<bool> existeCuenta(Map<String, dynamic> data) async {
     MySqlConnection conn = await DataBase.establecerConexion();
     var respuesta = await conn.query("SELECT * FROM cuentas WHERE cuenta = ?", [data["cuenta"]]);
     bool existe = respuesta.isNotEmpty;
@@ -14,7 +14,7 @@ class Cuenta {
       await conn.close();
       return false;
     }
-    await conn.query("INSERT INTO cuentas (cuenta,passwordCuenta) VALUES(?,?)",[data["cuenta"], data["passwordCuenta"]]);
+    await conn.query("INSERT INTO cuentas (cuenta,passwordCuenta,iduser) VALUES(?,?,?)",[data["cuenta"], data["passwordCuenta"], data["iduser"]]);
     await conn.close();
     return true;
   }
@@ -26,7 +26,7 @@ class Cuenta {
   }
   static Future<List<Cuenta>> recuperarCuentas() async {
     var conn = await DataBase.establecerConexion();
-    var respuesta = await conn.query("""SELECT * FROM cuentas""");
+    var respuesta = await conn.query("""SELECT * FROM cuentas""" );
     List<Cuenta> listado = [];
     for (ResultRow registro in respuesta) {
       Cuenta cuenta = Cuenta.fromDataBase(registro);

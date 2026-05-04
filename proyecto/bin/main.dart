@@ -2,7 +2,7 @@ import 'dart:io';
 import 'utils.dart/utils.dart';
 
 void main() async {
-  DataBase.instalacion();
+  await DataBase.instalacion();
   String pantalla = Controladormenu.inicio;
   while (true) {
     switch (pantalla) {
@@ -19,7 +19,7 @@ void main() async {
       pantalla = Controladormenu.menuAcciones();
       break;
     case "addCuenta":
-      pantalla = await Controladormenu.addCuenta();
+      pantalla = await Controladormenu.addCuenta(SesionGlobal.usuarioActual!);
       break;
     case "gestionar":
       pantalla = await Controladormenu.opcionesGestionCuenta();
