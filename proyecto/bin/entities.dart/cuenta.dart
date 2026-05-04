@@ -24,9 +24,9 @@ class Cuenta {
     cuenta = row["cuenta"];
     passwordCuenta = row["passwordcuenta"];
   }
-  static Future<List<Cuenta>> recuperarCuentas() async {
+  static Future<List<Cuenta>> recuperarCuentas(int iduser) async {
     var conn = await DataBase.establecerConexion();
-    var respuesta = await conn.query("""SELECT * FROM cuentas""" );
+    var respuesta = await conn.query("""SELECT * FROM cuentas WHERE iduser = ?""", [iduser] );
     List<Cuenta> listado = [];
     for (ResultRow registro in respuesta) {
       Cuenta cuenta = Cuenta.fromDataBase(registro);

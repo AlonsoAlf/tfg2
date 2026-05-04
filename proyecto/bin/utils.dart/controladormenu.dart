@@ -192,7 +192,8 @@ abstract class Controladormenu {
   static Future<String> opcionesGestionCuenta() async {//hay que refactorizar
     String? opcion;
     int? numero;
-    List<Cuenta> cuentas = await Cuenta.recuperarCuentas();
+    int iduser = SesionGlobal.usuarioActual!.iduser!;
+    List<Cuenta> cuentas = await Cuenta.recuperarCuentas(iduser);
     for (int i = 0; i < cuentas.length; i++) {
       stdout.writeln("""\n${cuentas[i].idcuenta}  [${cuentas[i].cuenta},  ${cuentas[i].passwordCuenta}]""");
     }
